@@ -1,7 +1,7 @@
 
 psm <- function(a,b,var,max,min,id, nn){
   # Desc: 
-  #  Propensity score greedy match without replacement
+  #  Propensity score greedy match with replacement
   # 
   # Args:
   #   a + b are dataframes containing a unique ID and probability to be matched (e.g. df1, df2). df a should contain the treatment.
@@ -37,7 +37,7 @@ psm <- function(a,b,var,max,min,id, nn){
         
         #Drop records that have been matched
         a <- a[!(a$id %in% unique(c$id.x)),]
-        b <- b[!(b$id %in% unique(c$id.y)),]
+        #b <- b[!(b$id %in% unique(c$id.y)),]
         rm(c)
       }
   }
