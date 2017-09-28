@@ -28,7 +28,7 @@ psm <- function(a,b,var,max,min,id, nn){
   
   #loop
   for(k in max:min){
-    print(paste0("length = ", k))
+    #print(paste0("length = ", k))
     
     if(nrow(a) >0){
       #Round match value
