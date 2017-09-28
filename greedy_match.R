@@ -12,35 +12,29 @@ psm <- function(a,b,var,max,min,id, nn){
   #   
   # Returns:
   #   Dataframe of matches 
-
-  matched <- data.frame()
+  
+  matched <- c()
   
   for(k in max:min){
     print(paste0("length = ", k))
     
-      if(nrow(a) >0){
-        #Round match value
-        a$round <- round(a[,var], k)
-        b$round <- round(b[,var], k)
+    if(nrow(a) > 0){
+      #Round match value
+      a$round <- round(a[,var], k)
+      b$round <- round(b[,var], k)
+      
+      for(rows in 1:nrow(a)){
+        inq <- a$round[rows] 
+        found <- grep(inq, b$round)
+        if(length(found) >= nn){
+          m1 <- c(a[rows, id], b[found[1:nn], id] )
+          a <- a[!(a[[id]] %in% m1),]
+          b <- b[!(b[[id]] %in% m1),]
+          matched <- c(matched, m1)
+        }
         
-        #merge by rounded value
-        c <- merge(a[,c("round",id)], b[,c("round",id)], by = "round")
-        c$rank <- ave(c$id.x, c$round,FUN = function(x){
-          r <- rank(x,ties.method = 'random')
-          as.numeric(factor(rank(sort(r))))[r]
-        })
-        
-        #Sort through matches
-        c <- c[c$rank <= nn, ]
-        c$precision <- k
-        matched <- rbind(matched, c)
-        
-        #Drop records that have been matched
-        a <- a[!(a$id %in% unique(c$id.x)),]
-        #b <- b[!(b$id %in% unique(c$id.y)),]
-        rm(c)
       }
+    }
   }
-  colnames(matched) <- c("pr","a_id","b_id","order_match","precision")
   return(matched)
 }
